@@ -84,15 +84,14 @@ func (n *UserRepoImpl) UpdateUser(context context.Context, user model.User) (mod
 
 }
 func (n *UserRepoImpl) UpdateRole(context context.Context, userRole request.UserUpdateRoleRequest) error {
-	user := model.User{
-		Id:     userRole.UserId,
-		RoleId: userRole.RoleId,
-	}
-	if res := n.sql.Db.Where(
-		&model.User{Id: user.Id},
-	).Save(&user); res.RowsAffected <= 0 {
+	user := model.User{}
+
+	if res := n.sql.Db.Model(&user).Where(
+		"id", userRole.UserId).Update(
+			"role_id",userRole.RoleId); res.RowsAffected <= 0 {
 		return biedeptrai.ErrorUserNotFound
 	}
+
 	return nil
 }
 

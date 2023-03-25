@@ -35,6 +35,11 @@ func GenToken(user model.User) (string, error) {
 	return result, nil
 }
 
+type JwtCustomClaimsRescueUnit struct {
+	Id string `json:"id,omitempty"`
+	jwt.RegisteredClaims
+}
+
 func RemoveToken(tokena string) error {
 	claims := &JwtCustomClaims{}
 	fmt.Println(tokena)
@@ -49,4 +54,22 @@ func RemoveToken(tokena string) error {
 	fmt.Println(claims.ExpiresAt)
 
 	return nil
+}
+
+func GenTokenResuceUnit(user model.RescueUnit) (string, error) {
+	claims := &JwtCustomClaimsRescueUnit{
+		user.Id,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+			Issuer:    "unauthorized",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	result, err := token.SignedString([]byte(SECRET_KEY))
+
+	if err != nil {
+		return "", err
+	}
+	return result, nil
 }

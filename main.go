@@ -1,10 +1,12 @@
 package main
 
 import (
-	"backend/controller"
+	rescue_controller "backend/controller/rescue"
+	user_controller "backend/controller/user"
 	"backend/db"
 	"backend/helper"
-	"backend/repository/repo_impl"
+	rescue_impl "backend/repository/rescue/repo_impl"
+	userImpl "backend/repository/user/repo_impl"
 	"backend/router"
 
 	"github.com/labstack/echo/v4"
@@ -28,12 +30,25 @@ func main() {
 	structValidator.RegisterValidate()
 	e.Validator = structValidator
 
-	userController := controller.UserController{
-		UserRepo: repo_impl.NewUserRepo(sql)}
+	userController := user_controller.UserController{
+		UserRepo: userImpl.NewUserRepo(sql)}
+
+	orderController := user_controller.OrderController{
+		OrderUserRepo: userImpl.NewOrderRepo(sql),
+	}
+	rescueUnitController := rescue_controller.RescueUnitController{
+		RescueUnitRepo: rescue_impl.NewRescueUnitRepo(sql),
+	}
+	rescueUnitOrderController := rescue_controller.OrderRescueUnitController{
+		OrderRescueUnitRepo: rescue_impl.NewOrderRepo(sql),
+	}
 
 	api := router.API{
-		Echo:           e,
-		UserController: userController,
+		Echo:                 e,
+		UserController:       userController,
+		RescueUnitController: rescueUnitController,
+		OrderController:      orderController,
+		OrderUnitController:  rescueUnitOrderController,
 	}
 
 	api.SetupRouter()

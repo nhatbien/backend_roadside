@@ -72,11 +72,19 @@ func Migratsion(s *gorm.DB) {
 	s.Migrator().DropTable("user_role")
 	s.Migrator().DropTable(model.Role{})
 	*/
-	s.Migrator().DropTable(model.Role{})
+	/* s.Migrator().DropTable(model.Role{})
 	s.Migrator().DropTable(model.User{})
+	s.Migrator().DropTable(model.RescueUnit{}) */
+	/*
+		s.AutoMigrate(model.Role{})
+		s.AutoMigrate(model.User{}) */
+	s.Migrator().DropTable(model.Order{})
+	//s.Migrator().DropTable(model.RescueUnit{})
 
-	s.AutoMigrate(model.Role{})
-	s.AutoMigrate(model.User{})
+	//s.AutoMigrate(model.RescueUnit{})
+	s.AutoMigrate(model.RescueUnit{})
+	s.AutoMigrate(model.Order{})
+	s.AutoMigrate(model.Location{})
 
 	//s.AutoMigrate(model.Permission{})
 	initDataRole(s)
@@ -92,7 +100,12 @@ func initDataRole(s *gorm.DB) {
 		RoleName:    "user",
 		Description: "user",
 	}
+	role3 := model.Role{
+		RoleName:    "rescue_unit",
+		Description: "Đơn vị cứu hộ",
+	}
 	s.Create(&role)
 	s.Create(&role2)
+	s.Create(&role3)
 
 }

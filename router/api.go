@@ -1,15 +1,19 @@
 package router
 
 import (
-	"backend/controller"
+	rescue_controller "backend/controller/rescue"
+	user_controller "backend/controller/user"
 	"backend/middleware"
 
 	"github.com/labstack/echo/v4"
 )
 
 type API struct {
-	Echo           *echo.Echo
-	UserController controller.UserController
+	Echo                 *echo.Echo
+	UserController       user_controller.UserController
+	RescueUnitController rescue_controller.RescueUnitController
+	OrderUnitController  rescue_controller.OrderRescueUnitController
+	OrderController      user_controller.OrderController
 }
 
 func (api *API) SetupRouter() {
@@ -23,6 +27,23 @@ func (api *API) SetupRouter() {
 	user.POST("/signin", api.UserController.Login)
 	user.POST("/update", api.UserController.Update, middleware.JWTMiddleware())
 	user.POST("/update-role", api.UserController.UpdateRole, middleware.JWTMiddleware())
+	user.POST("/update/location", api.UserController.UpdateLocationUser, middleware.JWTMiddleware())
+
 	user.GET("/profile", api.UserController.GetProfile, middleware.JWTMiddleware())
 
+	rescueUnit := v1.Group("/rescue-unit")
+	rescueUnit.POST("/login", api.RescueUnitController.Login)
+	rescueUnit.POST("/signup", api.RescueUnitController.SaveRescueUnit)
+	rescueUnit.POST("/update/location", api.RescueUnitController.UpdateLocationRescueUnit, middleware.JWTMiddleware())
+	rescueUnit.GET("/:id", api.RescueUnitController.GetRescueUnit, middleware.JWTMiddleware())
+	//rescueUnit.GET("/all", api.RescueUnitController.GetRescueUnits, middleware.JWTMiddleware())
+	rescueUnit.GET("/all", api.RescueUnitController.GetRescueUnitsByLocation, middleware.JWTMiddleware())
+	rescueUnit.GET("/order/all", api.OrderUnitController.GetOrderByNear, middleware.JWTMiddleware())
+	rescueUnit.POST("/order/:id/select", api.OrderUnitController.SelectOrder, middleware.JWTMiddleware())
+	rescueUnit.PUT("/order/:id", api.OrderUnitController.PutOrder, middleware.JWTMiddleware())
+	rescueUnit.GET("/order/pending", api.OrderUnitController.GetOrdersPending, middleware.JWTMiddleware())
+
+	order := v1.Group("/order")
+	order.POST("/save", api.OrderController.SaveOrder, middleware.JWTMiddleware())
+	order.GET("/:id", api.OrderController.GetOrder, middleware.JWTMiddleware())
 }

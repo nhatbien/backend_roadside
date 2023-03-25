@@ -13,5 +13,6 @@ var (
 	ErrorUserDupPhone    = errors.New("số điện thoại này đã có người sử dụng")
 	ErrorUserDupUsername = errors.New("username này đã có người sử dụng")
 
-	ErrorRoleUser = errors.New("bạn không phải là admin")
+	ErrorRoleUser   = errors.New("bạn không phải là admin")
+	ErrorRoleRescue = errors.New("bạn không phải là cứu hộ")
 )

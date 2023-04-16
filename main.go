@@ -42,6 +42,9 @@ func main() {
 	rescueUnitOrderController := rescue_controller.OrderRescueUnitController{
 		OrderRescueUnitRepo: rescue_impl.NewOrderRepo(sql),
 	}
+	statsController := user_controller.StatsController{
+		StatsRepo: userImpl.NewStatsRepo(sql),
+	}
 
 	api := router.API{
 		Echo:                 e,
@@ -49,6 +52,7 @@ func main() {
 		RescueUnitController: rescueUnitController,
 		OrderController:      orderController,
 		OrderUnitController:  rescueUnitOrderController,
+		StatsController:      statsController,
 	}
 
 	api.SetupRouter()

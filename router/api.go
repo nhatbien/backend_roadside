@@ -14,6 +14,7 @@ type API struct {
 	RescueUnitController rescue_controller.RescueUnitController
 	OrderUnitController  rescue_controller.OrderRescueUnitController
 	OrderController      user_controller.OrderController
+	StatsController      user_controller.StatsController
 }
 
 func (api *API) SetupRouter() {
@@ -46,4 +47,10 @@ func (api *API) SetupRouter() {
 	order := v1.Group("/order")
 	order.POST("/save", api.OrderController.SaveOrder, middleware.JWTMiddleware())
 	order.GET("/:id", api.OrderController.GetOrder, middleware.JWTMiddleware())
+
+	stats := v1.Group("/stats")
+	stats.GET("/vehicle", api.StatsController.StatsVehicle)
+	stats.GET("/rescue", api.StatsController.StatsRescueUnit)
+	stats.GET("/order", api.StatsController.StatsOrder)
+	stats.GET("/order-by-date", api.StatsController.StatsOrderByDate)
 }

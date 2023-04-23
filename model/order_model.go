@@ -10,6 +10,7 @@ type Order struct {
 	Lat          float64    `json:"lat,omitempty"`
 	Lng          float64    `json:"lng,omitempty"`
 	Note         string     `json:"note,omitempty"`
+	Stats        float32    `json:"stats,omitempty"`
 	Status       int        `json:"status,omitempty" gorm:"default:0"`
 	CreatedAt    time.Time  `json:"created_at,omitempty" `
 	UpdatedAt    time.Time  `json:"updated_at,omitempty" `

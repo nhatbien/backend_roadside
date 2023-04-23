@@ -8,3 +8,7 @@ type SaveOrderRequest struct {
 type PutOrderRequest struct {
 	Status int `json:"status,omitempty"`
 }
+
+type PutStatsOrderRequest struct {
+	Stats float32 `json:"stats,omitempty"`
+}

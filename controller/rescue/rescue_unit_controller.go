@@ -147,6 +147,7 @@ func (n *RescueUnitController) SaveRescueUnit(c echo.Context) error {
 		Phone:    request.Phone,
 		Email:    request.Email,
 		Address:  request.Address,
+		Avatar:   request.Avatar,
 		Password: hash,
 		Lat:      request.Lat,
 		Lng:      request.Lng,

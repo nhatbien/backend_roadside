@@ -46,7 +46,9 @@ func (api *API) SetupRouter() {
 
 	order := v1.Group("/order")
 	order.POST("/save", api.OrderController.SaveOrder, middleware.JWTMiddleware())
+	order.PUT("/:id", api.OrderController.PutStatsOrder, middleware.JWTMiddleware())
 	order.GET("/:id", api.OrderController.GetOrder, middleware.JWTMiddleware())
+	order.GET("/history", api.OrderController.GetOrdersByUserId, middleware.JWTMiddleware())
 
 	stats := v1.Group("/stats")
 	stats.GET("/vehicle", api.StatsController.StatsVehicle)

@@ -106,6 +106,52 @@ func (o *OrderController) PutOrder(c echo.Context) error {
 
 }
 
+func (o *OrderController) PutStatsOrder(c echo.Context) error {
+	request := request.PutStatsOrderRequest{}
+	idOrder, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		fmt.Println("Error parsing float:", err)
+		return c.JSON(http.StatusNotFound, model.Response{
+			Status:  false,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+	if err := c.Bind(&request); err != nil {
+		return c.JSON(http.StatusBadRequest, model.Response{
+			Status:  false,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+	if err := c.Validate(request); err != nil {
+		return c.JSON(http.StatusBadRequest, model.Response{
+			Status:  false,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+	order := model.Order{
+		Id:        idOrder,
+		Stats:     request.Stats,
+		UpdatedAt: time.Now(),
+	}
+	order, err = o.OrderUserRepo.PutOrder(c.Request().Context(), order)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, model.Response{
+			Status:  false,
+			Message: err.Error(),
+			Data:    nil,
+		})
+
+	}
+	return c.JSON(http.StatusOK, model.Response{
+		Status:  true,
+		Message: "Cập nhật thành công",
+		Data:    order,
+	})
+
+}
 func (o *OrderController) GetOrder(c echo.Context) error {
 	id := c.Param("id")
 
@@ -127,6 +173,19 @@ func (o *OrderController) GetOrder(c echo.Context) error {
 		Status:  true,
 		Message: "Lấy dữ liệu thành công",
 		Data:    order,
+	})
+}
+func (o *OrderController) GetOrdersByUserId(c echo.Context) error {
+	tokenData := c.Get("user").(*jwt.Token)
+	claims := tokenData.Claims.(*model.JwtCustomClaims)
+	orders, err := o.OrderUserRepo.GetOrdersByUserId(c.Request().Context(), claims.Id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, model.Response{
+		Status:  true,
+		Message: "Lấy dữ liệu thành công",
+		Data:    orders,
 	})
 }
 

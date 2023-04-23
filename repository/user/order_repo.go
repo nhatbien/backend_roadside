@@ -8,6 +8,7 @@ import (
 type OrderUserRepo interface {
 	SaveOrder(context context.Context, order model.Order) (model.Order, error)
 	PutOrder(context context.Context, order model.Order) (model.Order, error)
+	PutStatsOrder(context context.Context, order model.Order) (model.Order, error)
 
 	GetOrder(context context.Context, orderId int) (model.Order, error)
 	GetOrders(context context.Context) ([]model.Order, error)

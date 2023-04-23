@@ -6,6 +6,7 @@ import (
 	"backend/model"
 	user_repo "backend/repository/user"
 	"context"
+	"time"
 
 	"gorm.io/gorm/clause"
 )
@@ -24,6 +25,8 @@ func (n *OrderRepoImpl) SaveOrder(context context.Context, order model.Order) (m
 	}
 	order.Lat = user.Lat
 	order.Lng = user.Lng
+	order.CreatedAt = time.Now()
+	order.UpdatedAt = time.Now()
 
 	err := n.sql.Db.Preload(clause.Associations).Create(&order).Error
 	if err != nil {
@@ -33,10 +36,38 @@ func (n *OrderRepoImpl) SaveOrder(context context.Context, order model.Order) (m
 }
 
 func (n *OrderRepoImpl) PutOrder(context context.Context, order model.Order) (model.Order, error) {
+	order.UpdatedAt = time.Now()
 	err := n.sql.Db.Updates(&order).Error
+
 	if err != nil {
 		return order, err
 	}
+	return order, nil
+}
+
+func (n *OrderRepoImpl) PutStatsOrder(context context.Context, order model.Order) (model.Order, error) {
+	var orderModel model.Order
+	var rescue model.RescueUnit
+
+	err := n.sql.Db.Preload(clause.Associations).Find(&orderModel, order.Id).Error
+	orderModel.Stats = order.Stats
+	orderModel.UpdatedAt = time.Now()
+
+	if err != nil {
+		return order, err
+	}
+
+	n.sql.Db.Where(&model.RescueUnit{Id: orderModel.RescueUnit.Id}).First(&rescue)
+	if rescue.Stats == 0 {
+		rescue.Stats = 1
+	}
+	rescue.Stats = (order.Stats + rescue.Stats) / 2
+	n.sql.Db.Save(&rescue)
+
+	if err := n.sql.Db.Save(&orderModel).Error; err != nil {
+		return orderModel, err
+	}
+
 	return order, nil
 }
 
@@ -65,7 +96,7 @@ func (n *OrderRepoImpl) GetOrdersByUserId(context context.Context, userId string
 	var orders []model.Order
 	if res := n.sql.Db.Where(
 		&model.Order{UserId: userId},
-	).Find(&orders); res.RowsAffected <= 0 {
+	).Preload(clause.Associations).Find(&orders); res.RowsAffected <= 0 {
 		return orders, nil
 	}
 	return orders, nil
@@ -94,7 +125,7 @@ func (n *OrderRepoImpl) GetOrdersByUserIdAndStatus(context context.Context, user
 	var orders []model.Order
 	if res := n.sql.Db.Where(
 		&model.Order{UserId: userId, Status: status},
-	).Find(&orders); res.RowsAffected <= 0 {
+	).Preload(clause.Associations).Find(&orders); res.RowsAffected <= 0 {
 		return orders, nil
 	}
 	return orders, nil

@@ -5,6 +5,7 @@ type SaveRescueUnitRequest struct {
 	Phone    string  `json:"phone,omitempty" validate:"required"`
 	Email    string  `json:"email,omitempty" validate:"required"`
 	Address  string  `json:"address,omitempty" validate:"required"`
+	Avatar   string  `json:"avatar,omitempty"`
 	Password string  `json:"password,omitempty" validate:"required"`
 	Lat      float64 `json:"lat,omitempty"`
 	Lng      float64 `json:"lng,omitempty"`

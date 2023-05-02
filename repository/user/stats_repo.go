@@ -11,4 +11,5 @@ type StatsRepo interface {
 	StatsRescueUnit(context context.Context) (interface{}, error)
 	StatsOrderByDate(context context.Context, startDate time.Time, endDate time.Time) ([]model.Order, error)
 	StatsOrder(context context.Context) (interface{}, error)
+	StatsOrderRating(context context.Context) (interface{}, error)
 }

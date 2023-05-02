@@ -83,3 +83,20 @@ func (s *StatsController) StatsOrderByDate(c echo.Context) error {
 		Data:    stats,
 	})
 }
+
+func (s *StatsController) StatsOrderRating(c echo.Context) error {
+
+	stats, err := s.StatsRepo.StatsOrderRating(c.Request().Context())
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, model.Response{
+			Status:  false,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+	return c.JSON(http.StatusOK, model.Response{
+		Status:  true,
+		Message: "Success",
+		Data:    stats,
+	})
+}

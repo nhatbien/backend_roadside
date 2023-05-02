@@ -55,4 +55,5 @@ func (api *API) SetupRouter() {
 	stats.GET("/rescue", api.StatsController.StatsRescueUnit)
 	stats.GET("/order", api.StatsController.StatsOrder)
 	stats.GET("/order-by-date", api.StatsController.StatsOrderByDate)
+	stats.GET("/rating", api.StatsController.StatsOrderRating)
 }

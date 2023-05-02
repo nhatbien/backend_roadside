@@ -211,3 +211,33 @@ func (n *StatsRepoImpl) StatsOrderByDate(context context.Context, startDate time
 	}
 	return orders, nil
 }
+func (n *StatsRepoImpl) StatsOrderRating(context context.Context) (interface{}, error) {
+	var ratingCount RatingCount
+
+	n.sql.Db.Raw(`SELECT 
+    SUM(IF(stats >= 4 AND stats < 5, 1, 0)) AS rating_4_5,
+    SUM(IF(stats >= 3 AND stats < 4, 1, 0)) AS rating_3_4,
+    SUM(IF(stats >= 2 AND stats < 3, 1, 0)) AS rating_2_3,
+    SUM(IF(stats >= 1 AND stats < 2, 1, 0)) AS rating_1_2,
+    SUM(IF(stats >= 0 AND stats < 1, 1, 0)) AS rating_0_1 
+FROM 
+    orders;`).Scan(&ratingCount)
+	result := map[string]interface{}{
+		"rating_4_5": ratingCount.Rating45,
+		"rating_3_4": ratingCount.Rating34,
+		"rating_2_3": ratingCount.Rating23,
+		"rating_1_2": ratingCount.Rating12,
+		"rating_0_1": ratingCount.Rating01,
+	}
+
+	return result, nil
+
+}
+
+type RatingCount struct {
+	Rating45 int `gorm:"column:rating_4_5"`
+	Rating34 int `gorm:"column:rating_3_4"`
+	Rating23 int `gorm:"column:rating_2_3"`
+	Rating12 int `gorm:"column:rating_1_2"`
+	Rating01 int `gorm:"column:rating_0_1"`
+}

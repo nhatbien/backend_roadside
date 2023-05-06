@@ -65,7 +65,7 @@ func (n *OrderRepoImpl) GetOrders(context context.Context) ([]model.Order, error
 func (n *OrderRepoImpl) GetOrdersByUserId(context context.Context, userId string) ([]model.Order, error) {
 	var orders []model.Order
 	if res := n.sql.Db.Where(
-		&model.Order{UserId: userId},
+		&model.Order{RescueUnitId: &userId},
 	).Find(&orders); res.RowsAffected <= 0 {
 		return orders, nil
 	}

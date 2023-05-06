@@ -43,6 +43,7 @@ func (api *API) SetupRouter() {
 	rescueUnit.POST("/order/:id/select", api.OrderUnitController.SelectOrder, middleware.JWTMiddleware())
 	rescueUnit.PUT("/order/:id", api.OrderUnitController.PutOrder, middleware.JWTMiddleware())
 	rescueUnit.GET("/order/pending", api.OrderUnitController.GetOrdersPending, middleware.JWTMiddleware())
+	rescueUnit.GET("/order/history", api.OrderUnitController.GetOrdersByUserId, middleware.JWTMiddleware())
 
 	order := v1.Group("/order")
 	order.POST("/save", api.OrderController.SaveOrder, middleware.JWTMiddleware())

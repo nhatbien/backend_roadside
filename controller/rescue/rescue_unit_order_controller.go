@@ -148,4 +148,19 @@ func (n *OrderRescueUnitController) PutOrder(c echo.Context) error {
 		Message: "Lấy đơn thành công",
 		Data:    order,
 	})
+
+}
+func (o *OrderRescueUnitController) GetOrdersByUserId(c echo.Context) error {
+	tokenData := c.Get("user").(*jwt.Token)
+	claims := tokenData.Claims.(*model.JwtCustomClaims)
+
+	orders, err := o.OrderRescueUnitRepo.GetOrdersByUserId(c.Request().Context(), claims.Id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, model.Response{
+		Status:  true,
+		Message: "Lấy dữ liệu thành công",
+		Data:    orders,
+	})
 }

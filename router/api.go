@@ -35,6 +35,8 @@ func (api *API) SetupRouter() {
 	rescueUnit := v1.Group("/rescue-unit")
 	rescueUnit.POST("/login", api.RescueUnitController.Login)
 	rescueUnit.POST("/signup", api.RescueUnitController.SaveRescueUnit)
+	rescueUnit.GET("/profile", api.RescueUnitController.GetProfile, middleware.JWTMiddleware())
+
 	rescueUnit.POST("/update/location", api.RescueUnitController.UpdateLocationRescueUnit, middleware.JWTMiddleware())
 	rescueUnit.GET("/:id", api.RescueUnitController.GetRescueUnit, middleware.JWTMiddleware())
 	//rescueUnit.GET("/all", api.RescueUnitController.GetRescueUnits, middleware.JWTMiddleware())

@@ -291,3 +291,26 @@ func (n *RescueUnitController) GetRescueUnitsByLocation(c echo.Context) error {
 		Data:    rescueUnits,
 	})
 }
+
+func (u *RescueUnitController) GetProfile(c echo.Context) error {
+
+	tokenData := c.Get("user").(*jwt.Token)
+
+	claims := tokenData.Claims.(*model.JwtCustomClaims)
+
+	user, err := u.RescueUnitRepo.GetRescueUnit(c.Request().Context(), claims.Id)
+
+	if err != nil {
+		return c.JSON(http.StatusNotFound, model.Response{
+			Status:  false,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	return c.JSON(http.StatusOK, model.Response{
+		Status:  true,
+		Message: "Lấy thông tin thành công",
+		Data:    user,
+	})
+}

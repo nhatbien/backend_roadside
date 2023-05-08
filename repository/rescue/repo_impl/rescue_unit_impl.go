@@ -9,6 +9,8 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"gorm.io/gorm/clause"
 )
 
 type RescueUnitRepoImpl struct {
@@ -47,7 +49,7 @@ func (n *RescueUnitRepoImpl) GetRescueUnit(context context.Context, rescueUnitId
 	var rescueUnit model.RescueUnit
 	if res := n.sql.Db.Where(
 		&model.RescueUnit{Id: rescueUnitId},
-	).First(&rescueUnit); res.RowsAffected <= 0 {
+	).Preload(clause.Associations).First(&rescueUnit); res.RowsAffected <= 0 {
 		return rescueUnit, biedeptrai.ErrorRescueUnitNotFound
 	}
 	return rescueUnit, nil

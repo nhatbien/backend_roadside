@@ -147,7 +147,7 @@ func (n *OrderRepoImpl) SelectOrder(context context.Context, rescueUnitId string
 
 func (n *OrderRepoImpl) GetOrdersPending(context context.Context, rescueUnitId string) ([]model.Order, error) {
 	var orders []model.Order
-	if res := n.sql.Db.Where(&model.Order{RescueUnitId: &rescueUnitId}).Where("status <> ?", 4).Preload(clause.Associations).Find(&orders); res.RowsAffected <= 0 {
+	if res := n.sql.Db.Where(&model.Order{RescueUnitId: &rescueUnitId}).Where("status <> ? AND status <> 5", 4).Preload(clause.Associations).Find(&orders); res.RowsAffected <= 0 {
 		return orders, nil
 	}
 	return orders, nil
